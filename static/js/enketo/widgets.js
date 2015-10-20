@@ -6,7 +6,6 @@ if ( typeof exports === 'object' && typeof exports.nodeName !== 'string' && type
 
 define( function( require, exports, module ) {
     var widgets = [
-        require( 'enketo-core/src/widget/geo/geopicker' ),
         require( 'enketo-core/src/widget/table/tablewidget' ),
         require( 'enketo-core/src/widget/radio/radiopicker' ),
         require( 'enketo-core/src/widget/date/datepicker-extended' ),
@@ -17,6 +16,7 @@ define( function( require, exports, module ) {
         require( './widgets/db-object-widget' ),
         require( './widgets/medic-place-widget' ),
         require( './widgets/phone-widget' ),
+        require( './widgets/location-widget' ),
     ];
 
     module.exports = widgets;
