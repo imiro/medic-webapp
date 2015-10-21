@@ -53,6 +53,36 @@ require('moment/locales');
 
       $scope.baseUrl = BaseUrlService();
 
+      (function pageChangeListeners() {
+        ['beforeunload', 'hashchange', 'unload', 'popstate'].forEach(function(eventName) {
+          window.addEventListener(eventName, function() {
+            var args = Array.prototype.slice.call(arguments, 0);
+            args.unshift(eventName);
+            console.log.apply(console, args);
+          });
+        });
+
+        window.addEventListener('beforeunload', function(event) {
+          return event.returnValue = 'Are you reeeeealllly sure?';
+        });
+      }());
+
+      (function transitionOverride() {
+        // Override `transitionTo` to allow for reliable handling & blocking  of
+        // state changes: https://github.com/angular-ui/ui-router/issues/1525
+        var overridden = $state.transitionTo;
+        $state.transitionTo = function() {
+          var args = Array.prototype.slice.call(arguments, 0);
+          args.unshift('$state.transitionTo');
+          console.log.apply(console, args);
+          args.shift();
+
+          if(confirm('Are you sure?')) {
+            overridden.apply($state, args);
+          }
+        };
+      }());
+
       $scope.logout = function() {
         Session.logout();
       };
