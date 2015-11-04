@@ -69,7 +69,27 @@ require('moment/locales');
       };
 
       $scope.back = function() {
-        $window.history.back();
+        if ($scope.isMobile()) {
+          $scope.handleAndroidBack();
+        } else {
+          $window.history.back();
+        }
+      };
+
+      var androidBackHandler;
+      $scope.clearAndroidBackHandler = function() {
+        androidBackHandler = null;
+      };
+      $scope.setAndroidBackHandler = function(handler) {
+        androidBackHandler = handler;
+      };
+      $scope.handleAndroidBack = function() {
+        // On Android, back button should have no effect if we are viewing the
+        // LHS.  If we are viewing RHS, it's up to the specific controller what
+        // happens.
+        if ($scope.showContent && androidBackHandler) {
+          androidBackHandler();
+        }
       };
 
       $scope.closeContentPane = function() {
