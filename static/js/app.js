@@ -352,13 +352,47 @@ _.templateSettings = {
   app.constant('E2ETESTING', window.location.href.indexOf('e2eTesting=true') !== -1);
 
   var bootstrapApplication = function() {
-    app.constant('APP_CONFIG', {
-      name: '@@APP_CONFIG.name',
-      version: '@@APP_CONFIG.version'
-    });
-    angular.element(document).ready(function() {
-      angular.bootstrap(document, [ 'inboxApp' ]);
-    });
+    // check that the app has been fully started previously
+    window.PouchDB(names.local)
+      .get('local:first_run_completed_ok')
+      .then(function() {
+        app.constant('APP_CONFIG', {
+          name: '@@APP_CONFIG.name',
+          version: '@@APP_CONFIG.version'
+        });
+        angular.element(document).ready(function() {
+          angular.bootstrap(document, [ 'inboxApp' ]);
+        });
+      })
+      .catch(function() {
+        $('.bootstrap-layer').html('<div><div class="loader"></div><p><span id="initial-sync-progress">0</span> docs downloaded...</p></div>');
+        window.PouchDB.replicate(names.remote, names.local, {
+          live: false,
+          filter: 'medic/doc_by_place',
+          query_params: { id: 'nonsense' },
+          batch_size: 10,
+        })
+        .on('change', function(info) {
+          $('#initial-sync-progress').html(info.docs_read);
+        })
+        .on('complete', function() {
+          alert('sync complete!');
+          window.PouchDB(names.local)
+            .put({ _id: 'local:first_run_completed_ok' })
+            .then(function() {
+              alert('sync flag saved!!');
+              window.location.reload();
+            })
+            .catch(function(err) {
+              $('.bootstrap-layer').html('<div><p>Loading error, please check your connection.</p><a class="btn btn-primary" href="#" onclick="window.location.reload(false);">Try again</a></div>');
+              console.error('Error saving first-run-complete flag', err);
+            });
+        })
+        .on('error', function(err) {
+          $('.bootstrap-layer').html('<div><p>Loading error, please check your connection.</p><a class="btn btn-primary" href="#" onclick="window.location.reload(false);">Try again</a></div>');
+          console.error('Error performing initial sync', err);
+        });
+      });
   };
 
   var names = getDbNames();
