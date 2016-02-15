@@ -10,8 +10,10 @@ function PARSER($parse, scope) {
 // medic-webapp specific config for LiveList.
 // This service should be invoked once at startup.
 angular.module('inboxServices').factory('LiveListConfig', [
-  '$log', '$parse', '$rootScope', '$templateCache', '$timeout', 'Changes', 'DB', 'LiveList', 'TaskGenerator',
-  function($log, $parse, $rootScope, $templateCache, $timeout, Changes, DB, LiveList, TaskGenerator) {
+  '$log', '$parse', '$rootScope', '$templateCache', '$timeout',
+      'Changes', 'DB', 'LiveList', 'ResourceIcons', 'TaskGenerator',
+  function($log, $parse, $rootScope, $templateCache, $timeout,
+      Changes, DB, LiveList, ResourceIcons, TaskGenerator) {
     // Configure LiveList service
     return function() {
       var contactTypes = [ 'district_hospital', 'health_center', 'clinic', 'person' ];
@@ -101,6 +103,24 @@ angular.module('inboxServices').factory('LiveListConfig', [
         }
       });
 
+
+      ResourceIcons.then(function(doc) {
+        $timeout(function() {
+          // Update task icons now that the relevant resources are available
+          $('img[data-resource-icon]').each(function() {
+            var e = $(this);
+            var name = e.attr('data-resource-icon');
+            e.removeAttr('data-resource-icon');
+
+            var filename = doc.resources[name];
+            var icon = filename && doc._attachments[filename];
+
+            if (icon) {
+              e.attr('src', 'data:' + icon.content_type + ';base64,' + icon.data);
+            }
+          });
+        }, 1000);
+      });
 
       LiveList.$listFor('tasks', {
         selecter: '#tasks-list ul',
