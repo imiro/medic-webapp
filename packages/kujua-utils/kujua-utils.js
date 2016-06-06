@@ -53,7 +53,7 @@ exports.isUserDistrictAdmin = function(userCtx) {
 };
 
 exports.isDbAdmin = function(userCtx) {
-    return exports.hasRole(userCtx, '_admin');
+    return exports.hasRole(userCtx, 'super_admin');
 };
 
 exports.hasRole = function(userCtx, role) {

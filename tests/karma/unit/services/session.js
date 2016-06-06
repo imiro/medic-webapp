@@ -192,8 +192,15 @@ describe('Session service', function() {
       done();
     });
 
-    it('returns true for _admin', function(done) {
+    it('returns false for _admin', function(done) {
       ipCookie.returns({ roles: [ '_admin' ] });
+      var actual = service.isAdmin();
+      chai.expect(actual).to.equal(false);
+      done();
+    });
+
+    it('returns true for super_admin', function(done) {
+      ipCookie.returns({ roles: [ 'super_admin' ] });
       var actual = service.isAdmin();
       chai.expect(actual).to.equal(true);
       done();

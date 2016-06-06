@@ -21,7 +21,7 @@ exports['hasPerm returns false if no known perm'] = function(test) {
 };
 
 exports['hasPerm returns true if db admin'] = function(test) {
-    test.equal(utils.hasPerm({roles: ['_admin']}, 'can_backup_facilities'), true);
+    test.equal(utils.hasPerm({roles: ['super_admin']}, 'can_backup_facilities'), true);
     test.done();
 };
 

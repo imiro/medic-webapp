@@ -50,7 +50,7 @@ describe('Auth service', function() {
   });
 
   it('resolves when user is db admin', function(done) {
-    userCtx.returns({ roles: [ '_admin' ] });
+    userCtx.returns({ roles: [ 'super_admin' ] });
     service([ 'can_backup_facilities' ]).then(done);
     $rootScope.$digest();
   });
@@ -162,7 +162,7 @@ describe('Auth service', function() {
   });
 
   it('rejects when admin and !permission', function(done) {
-    userCtx.returns({ roles: [ '_admin' ] });
+    userCtx.returns({ roles: [ 'super_admin' ] });
     service([ '!can_backup_facilities' ])
       .catch(function(err) {
         chai.expect(err).to.equal(undefined);

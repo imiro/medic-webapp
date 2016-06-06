@@ -113,7 +113,7 @@ var modal = require('../modules/modal');
 
       var getRoles = function(type, includeAdmin) {
         if (includeAdmin && type === 'admin') {
-          return ['_admin'];
+          return ['super_admin'];
         }
         if (!type || !rolesMap[type]) {
           return [];

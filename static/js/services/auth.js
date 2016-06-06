@@ -58,7 +58,7 @@ var _ = require('underscore');
         }
         var requiredPermissions = getRequired(permissions);
         var disallowedPermissions = getDisallowed(permissions);
-        if (_.contains(roles, '_admin')) {
+        if (_.contains(roles, 'super_admin')) {
           if (disallowedPermissions.length > 0) {
             return $q.reject();
           }

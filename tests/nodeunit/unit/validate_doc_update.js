@@ -39,10 +39,19 @@ exports['allowed returns false on userCtx with null name'] = function(test) {
   test.done();
 };
 
-exports['allowed returns truen when userCtx has _admin role'] = function(test) {
+exports['allowed returns false when userCtx has _admin role'] = function(test) {
   var userCtx = {
     name: 'a',
     roles: ['_admin']
+  };
+  test.equal(lib._allowed({}, {}, userCtx).allowed, false);
+  test.done();
+};
+
+exports['allowed returns true when userCtx has _admin role'] = function(test) {
+  var userCtx = {
+    name: 'a',
+    roles: ['super_admin']
   };
   test.equal(lib._allowed({}, {}, userCtx).allowed, true);
   test.done();

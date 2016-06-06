@@ -38,7 +38,7 @@ describe('UserDistrict service', function() {
   it('returns nothing for db admin', function(done) {
     userCtx = {
       name: 'greg',
-      roles: ['_admin']
+      roles: ['super_admin']
     };
     isAdmin.returns(true);
 
